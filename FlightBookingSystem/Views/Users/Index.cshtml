@@ -1,0 +1,49 @@
+@model FlightBookingSystem.Models.UserModel
+
+
+@if (Model == null)
+{
+    <div class="d-flex flex-column justify-content-center align-items-centerr">
+        <h1>Login</h1>
+        <br />
+        <form asp-action="Login" method="post">
+            <p>Username</p>
+            <input type="text" name="name" />
+            <p>Password</p>
+            <input type="password" name="password" class="mb-3" />
+            <br />
+            <button type="submit" class="btn btn-primary">Login</button>
+            <a asp-action="Create" class="btn btn-primary">Sign up</a>
+        </form>
+    </div>
+    
+
+}
+else
+{
+    var item = Model;
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Surname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Age)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Password)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RoleModel!.Id)
+        </td>
+        <td>
+            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        </td>
+    </tr>
+
+}
+

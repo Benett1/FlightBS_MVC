@@ -7,7 +7,9 @@ namespace FlightBookingSystem.Models
 		public String? Surname { get; set; }
 		public int Age { get; set; }
 		public String? Password { get; set; }
-		public Guid RoleId { get; set; }
+		public int RoleId { get; set; }
+
+		public virtual RoleModel? RoleModel { get; set; }
 	}
 }
 

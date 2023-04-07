@@ -1,39 +1,55 @@
 ﻿using System.Diagnostics;
 using FlightBookingSystem.Models;
+using FlightBookingSystem.Models.DBGetModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace FlightBookingSystem.Controllers;
 
-
-
 public class HomeController : Controller
 {
-    LocationModel model = null;
-    private readonly ILogger<HomeController> _logger;
+    HttpClient client = new HttpClient();
+    private readonly DBContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(DBContext context)
     {
-        _logger = logger;
+        _context = context;
     }
 
-    
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        if (model == null) {
-            model = new LocationModel();
-        } 
-        model.Country = "kosove";
-        model.City = "Prishtine";
-        return View(model);
+        var flights = await _context.Flights.Include(f => f.ArrivalAirportv).Include(f => f.DepartureAirportv).Include(f => f.PlaneModel).ToListAsync();
+        List<FlightFormatted> flightsFormatted = new List<FlightFormatted>();
+
+        foreach (var flight in flights)
+        {
+            // Retrieve the departure and arrival airports from the related entities
+            var departureAirport = await _context.Airports
+                .FirstOrDefaultAsync(a => a.Id == flight.DepartureAirport);
+            var arrivalAirport = await _context.Airports
+                .FirstOrDefaultAsync(a => a.Id == flight.ArrivalAirport);
+            var plane = await _context.Planes
+                .FirstOrDefaultAsync(a => a.Id == flight.PlaneId);
+            var airline = await _context.Airlines
+                .FirstOrDefaultAsync(a => a.Id == plane!.AirlineId);
+
+
+            // Create a new FlightModel object and populate it with data
+            var flightFormatted = new FlightFormatted(flight.Id, departureAirport.Name, arrivalAirport.Name,flight.DateTime, airline.Name);
+
+            // Add the new FlightModel object to the list
+            flightsFormatted.Add(flightFormatted);
+            }
+        return View(flightsFormatted);
     }
 
     public IActionResult Privacy()
     {
-        LocationModel model = new LocationModel();
-        model.Country = "kosove";
-        model.City = "Prishtine";
-        return View(model);
+        return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -42,4 +58,3 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
-

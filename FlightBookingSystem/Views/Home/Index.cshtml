@@ -1,13 +1,59 @@
-﻿@{
+﻿@using FlightBookingSystem.Models.DBGetModels;
+@{
     ViewData["Title"] = "Home Page";
 }
 
-@Model RoleModel; 
-<div class="text-center">
-    <h1>@Model.Id</h1>
-    <h1>@Model.Country</h1>
-    <h2>@Model.City</h2>
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@model List<FlightFormatted>
+    
+<div class="text-center container">
+    <div class="row d-flex justify-content-around">
+        <div class="col-6">
+            <form class="d-flex flex-rows justify-content-evenly shadow p-3 mb-5 bg-white rounded">
+                <select name="Departure Airport:" id="languages">
+                    <option value="Prishtine">Prishtine</option>
+                    <option value="ArrivalAirport">Shkup</option>
+                </select>
 
+                <select name="ArrivalAirport Airport:" id="languages">
+                    <option value="ArrivalAirport">Shkup</option>
+                    <option value="Prishtine">Prishtine</option>
+                </select>
+                <input type="date" />
+
+                <button class="btn btn-primary">Search Flight</button>
+            </form>
+        </div>
+        <div>
+            @foreach (var e in Model)
+            {
+                <div class="d-flex flex-column shadow p-3 mb-5 bg-white rounded">
+                    <span>
+                        Flight Id:
+                        @e.id
+                    </span>
+                    <div class="d-flex flex-row justify-content-around">
+                        <p>
+                            DepartureAirport:
+                            @e.departureAirport
+                        </p>
+                        <br />
+                        <p>
+                            ArrivalAirportv:
+                            @e.arrivalAirport
+                        </p>
+                    </div>
+                    <div class="d-flex flex-row justify-content-around">
+                        <p>
+                            Date:
+                            @e.dateTime
+                        </p>
+                        <p>
+                            Airline:
+                            @e.airline
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

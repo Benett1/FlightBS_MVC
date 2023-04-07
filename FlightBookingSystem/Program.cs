@@ -1,7 +1,21 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.EntityFrameworkCore;
+using MySql.Data;
+using FlightBookingSystem;
+using FlightBookingSystem.Controllers;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+
+var connectionString = builder.Configuration.GetSection("DbConfig:ConnectionString").Get<string>();
+
+builder.Services.AddDbContext<DBContext>(options =>
+{
+    options.UseMySQL(connectionString!);
+});
 
 var app = builder.Build();
 
@@ -14,6 +28,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -25,4 +40,3 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-

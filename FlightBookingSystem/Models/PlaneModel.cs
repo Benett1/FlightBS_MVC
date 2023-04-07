@@ -10,6 +10,8 @@ namespace FlightBookingSystem.Models
 		public Double Payload { get; set; }
 		public Double Weight { get; set; }
 		public Guid AirlineId { get; set; }
+
+		public virtual AirlineModel? AirlineModel { get; set; }
 	}
 }
 
