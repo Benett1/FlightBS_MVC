@@ -1,49 +1,64 @@
 @model FlightBookingSystem.Models.UserModel
 
-
-@if (Model == null)
-{
-    <div class="d-flex flex-column justify-content-center align-items-centerr">
-        <h1>Login</h1>
-        <br />
-        <form asp-action="Login" method="post">
-            <p>Username</p>
-            <input type="text" name="name" />
-            <p>Password</p>
-            <input type="password" name="password" class="mb-3" />
+<div class="d-flex flex-rows flex-wrap justify-content-evenly align-items-center shadow p-3 mb-5 bg-white rounded text-center">
+    @if (Model == null)
+    {
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <h1>Login</h1>
             <br />
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a asp-action="Create" class="btn btn-primary">Sign up</a>
-        </form>
-    </div>
-    
-
+            <form asp-action="Login" method="post">
+                <p>Username</p>
+                <input type="text" name="name" />
+                <p>Password</p>
+                <input type="password" name="password" class="mb-3" />
+                <br />
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a asp-action="Create" class="btn btn-primary">Sign up</a>
+            </form>
+        </div>
+    }
+    else{
+        var item = Model;
+        <table >
+            <tr>
+                <td>
+                    <h1>Account Information</h1>
+                    Name:
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+            <tr />
+            <tr>
+                <td>
+                    Surname:
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Age:
+                    @Html.DisplayFor(modelItem => item.Age)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Role Name:
+                    @Html.DisplayFor(modelItem => item.RoleModel!.RoleName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a asp-action="Logout" class="btn btn-primary">Logout</a>
+                </td>
+            </tr>
+        </table>
 }
-else
-{
-    var item = Model;
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Surname)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Age)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Password)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RoleModel!.Id)
-        </td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-        </td>
-    </tr>
 
-}
+</div>
 

@@ -34,13 +34,13 @@
                 @Html.DisplayFor(modelItem => item.DateTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PlaneModel.Id)
+                @Html.DisplayFor(modelItem => item.PlaneModel.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DepartureAirportv.Id)
+                @Html.DisplayFor(modelItem => item.DepartureAirportv.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ArrivalAirportv.Id)
+                @Html.DisplayFor(modelItem => item.ArrivalAirportv.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

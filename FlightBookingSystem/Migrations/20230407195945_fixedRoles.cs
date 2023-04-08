@@ -7,7 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace FlightBookingSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class final_3 : Migration
+    public partial class fixedRoles : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,7 +70,7 @@ namespace FlightBookingSystem.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Plane",
+                name: "Planes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
@@ -84,9 +84,9 @@ namespace FlightBookingSystem.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Plane", x => x.Id);
+                    table.PrimaryKey("PK_Planes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Plane_Airlines_AirlineId",
+                        name: "FK_Planes_Airlines_AirlineId",
                         column: x => x.AirlineId,
                         principalTable: "Airlines",
                         principalColumn: "Id",
@@ -101,7 +101,7 @@ namespace FlightBookingSystem.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     RoleName = table.Column<string>(type: "longtext", nullable: true),
-                    AirlineId = table.Column<Guid>(type: "char(36)", nullable: false)
+                    AirlineId = table.Column<Guid>(type: "char(36)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -110,13 +110,12 @@ namespace FlightBookingSystem.Migrations
                         name: "FK_Roles_Airlines_AirlineId",
                         column: x => x.AirlineId,
                         principalTable: "Airlines",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Flight",
+                name: "Flights",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
@@ -127,30 +126,30 @@ namespace FlightBookingSystem.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Flight", x => x.Id);
+                    table.PrimaryKey("PK_Flights", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Flight_Airports_ArrivalAirport",
+                        name: "FK_Flights_Airports_ArrivalAirport",
                         column: x => x.ArrivalAirport,
                         principalTable: "Airports",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Flight_Airports_DepartureAirport",
+                        name: "FK_Flights_Airports_DepartureAirport",
                         column: x => x.DepartureAirport,
                         principalTable: "Airports",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Flight_Plane_PlaneId",
+                        name: "FK_Flights_Planes_PlaneId",
                         column: x => x.PlaneId,
-                        principalTable: "Plane",
+                        principalTable: "Planes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
@@ -162,9 +161,9 @@ namespace FlightBookingSystem.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Roles_RoleId",
+                        name: "FK_Users_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
@@ -189,15 +188,15 @@ namespace FlightBookingSystem.Migrations
                 {
                     table.PrimaryKey("PK_Bookings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bookings_Flight_FlightId",
+                        name: "FK_Bookings_Flights_FlightId",
                         column: x => x.FlightId,
-                        principalTable: "Flight",
+                        principalTable: "Flights",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bookings_User_UserId",
+                        name: "FK_Bookings_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -224,23 +223,23 @@ namespace FlightBookingSystem.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Flight_ArrivalAirport",
-                table: "Flight",
+                name: "IX_Flights_ArrivalAirport",
+                table: "Flights",
                 column: "ArrivalAirport");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Flight_DepartureAirport",
-                table: "Flight",
+                name: "IX_Flights_DepartureAirport",
+                table: "Flights",
                 column: "DepartureAirport");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Flight_PlaneId",
-                table: "Flight",
+                name: "IX_Flights_PlaneId",
+                table: "Flights",
                 column: "PlaneId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Plane_AirlineId",
-                table: "Plane",
+                name: "IX_Planes_AirlineId",
+                table: "Planes",
                 column: "AirlineId");
 
             migrationBuilder.CreateIndex(
@@ -249,8 +248,8 @@ namespace FlightBookingSystem.Migrations
                 column: "AirlineId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_RoleId",
-                table: "User",
+                name: "IX_Users_RoleId",
+                table: "Users",
                 column: "RoleId");
         }
 
@@ -261,16 +260,16 @@ namespace FlightBookingSystem.Migrations
                 name: "Bookings");
 
             migrationBuilder.DropTable(
-                name: "Flight");
+                name: "Flights");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Airports");
 
             migrationBuilder.DropTable(
-                name: "Plane");
+                name: "Planes");
 
             migrationBuilder.DropTable(
                 name: "Roles");

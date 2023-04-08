@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FlightBookingSystem;
 using FlightBookingSystem.Models;
-
+using FlightBookingSystem.Models.DBGetModels;
 namespace FlightBookingSystem.Controllers
 {
     public class AirportsController : Controller
@@ -48,7 +48,7 @@ namespace FlightBookingSystem.Controllers
         // GET: Airports/Create
         public IActionResult Create()
         {
-            ViewData["LocationID"] = new SelectList(_context.Locations, "Id", "Id");
+            ViewData["City"] = new SelectList(_context.Locations, "City", "City");
             return View();
         }
 
@@ -57,11 +57,15 @@ namespace FlightBookingSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LocationID,Name,Id")] AirportModel airportModel)
+        public async Task<IActionResult> Create(String location, String name)
         {
+            var city = _context.Locations.FirstOrDefault(e => e.City == location);
+            AirportModel airportModel = new AirportModel();
             if (ModelState.IsValid)
             {
                 airportModel.Id = Guid.NewGuid();
+                airportModel.Name = name;
+                airportModel.LocationID = city.Id;
                 _context.Add(airportModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

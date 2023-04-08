@@ -50,9 +50,9 @@ namespace FlightBookingSystem.Controllers
         // GET: Flights/Create
         public IActionResult Create()
         {
-            ViewData["ArrivalAirport"] = new SelectList(_context.Airports, "Id", "Id");
-            ViewData["DepartureAirport"] = new SelectList(_context.Airports, "Id", "Id");
-            ViewData["PlaneId"] = new SelectList(_context.Planes, "Id", "Id");
+            ViewData["ArrivalAirport"] = new SelectList(_context.Airports, "Name", "Name");
+            ViewData["DepartureAirport"] = new SelectList(_context.Airports, "Name", "Name");
+            ViewData["PlaneId"] = new SelectList(_context.Planes, "Name", "Name");
             return View();
         }
 
@@ -61,11 +61,19 @@ namespace FlightBookingSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PlaneId,DepartureAirport,ArrivalAirport,DateTime,Id")] FlightModel flightModel)
+        public async Task<IActionResult> Create(String planeId, string departureAirport, string arrivalAirport, DateTime dateTime)
         {
+            FlightModel flightModel = new FlightModel();
+            var plane = _context.Planes.FirstOrDefault(el => el.Name == planeId);
+            var departure = _context.Airports.FirstOrDefault(el => el.Name == departureAirport);
+            var arrival = _context.Airports.FirstOrDefault(el => el.Name == arrivalAirport);
             if (ModelState.IsValid)
             {
                 flightModel.Id = Guid.NewGuid();
+                flightModel.PlaneId = plane.Id;
+                flightModel.DepartureAirport = departure.Id;
+                flightModel.ArrivalAirport = arrival.Id;
+                flightModel.DateTime = dateTime;
                 _context.Add(flightModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

@@ -83,12 +83,17 @@ namespace FlightBookingSystem
                    .HasForeignKey("ArrivalAirport");
 
             builder.Entity<RoleModel>()
-             .HasKey(o => o.Id);
+                   .HasKey(o => o.Id);
+
+            builder.Entity<RoleModel>()
+                    .Property(r => r.AirlineId)
+                    .IsRequired(false);
 
             builder.Entity<RoleModel>()
                    .HasOne(e => e.AirlineModel)
                    .WithMany()
-                   .HasForeignKey("AirlineId");
+                   .HasForeignKey("AirlineId")
+                   .IsRequired(false);
 
             builder.Entity<UserModel>()
             .HasKey(o => o.Id);

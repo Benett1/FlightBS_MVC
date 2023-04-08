@@ -43,12 +43,13 @@ namespace FlightBookingSystem.Controllers
             }
 
             return View(airlineModel);
-        }
+        }  
 
         // GET: Airlines/Create
         public IActionResult Create()
         {
-            ViewData["CountryOfOrigin"] = new SelectList(_context.Locations, "Id", "Id");
+            ViewData["CountryOfOrigin"] = new SelectList(_context.Locations, "Country", "Country");
+            ViewBag.Locations = _context.Locations.ToList();
             return View();
         }
 
@@ -57,11 +58,15 @@ namespace FlightBookingSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,CountryOfOrigin,Id")] AirlineModel airlineModel)
+        public async Task<IActionResult> Create(string name, String countryOfOrigin, Guid id)
         {
+            var country = _context.Locations.FirstOrDefault(c => c.Country == countryOfOrigin);
+            AirlineModel airlineModel = new AirlineModel();
             if (ModelState.IsValid)
             {
                 airlineModel.Id = Guid.NewGuid();
+                airlineModel.Name = name;
+                airlineModel.CountryOfOrigin = country.Id;
                 _context.Add(airlineModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -83,7 +88,7 @@ namespace FlightBookingSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["CountryOfOrigin"] = new SelectList(_context.Locations, "Id", "Id", airlineModel.CountryOfOrigin);
+            ViewData["CountryOfOrigin"] = new SelectList(_context.Locations, "Country", "Country", airlineModel.CountryOfOrigin);
             return View(airlineModel);
         }
 
@@ -119,7 +124,7 @@ namespace FlightBookingSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CountryOfOrigin"] = new SelectList(_context.Locations, "Id", "Id", airlineModel.CountryOfOrigin);
+            ViewData["CountryOfOrigin"] = new SelectList(_context.Locations, "Country", "Country", airlineModel.CountryOfOrigin);
             return View(airlineModel);
         }
 

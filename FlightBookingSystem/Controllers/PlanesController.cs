@@ -48,7 +48,7 @@ namespace FlightBookingSystem.Controllers
         // GET: Planes/Create
         public IActionResult Create()
         {
-            ViewData["AirlineId"] = new SelectList(_context.Airlines, "Id", "Id");
+            ViewData["AirlineName"] = new SelectList(_context.Airlines, "Name", "Name");
             return View();
         }
 
@@ -57,11 +57,20 @@ namespace FlightBookingSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Model,Manufacturer,Seat,Payload,Weight,AirlineId,Id")] PlaneModel planeModel)
+        public async Task<IActionResult> Create(string name, string model, string manufacturer, int seat, int payload, int weight, String AirlineName)
         {
+            PlaneModel planeModel = new PlaneModel();
+            var airline = _context.Airlines.FirstOrDefault(e => e.Name == AirlineName);
             if (ModelState.IsValid)
             {
                 planeModel.Id = Guid.NewGuid();
+                planeModel.Name = name;
+                planeModel.Model = model;
+                planeModel.Manufacturer = manufacturer;
+                planeModel.Seat = seat;
+                planeModel.Payload = payload;
+                planeModel.Weight = weight;
+                planeModel.AirlineId = airline.Id;
                 _context.Add(planeModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

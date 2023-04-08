@@ -119,7 +119,7 @@ namespace FlightBookingSystem.Migrations
 
                     b.HasIndex("PlaneId");
 
-                    b.ToTable("Flight");
+                    b.ToTable("Flights");
                 });
 
             modelBuilder.Entity("FlightBookingSystem.Models.LocationModel", b =>
@@ -170,7 +170,7 @@ namespace FlightBookingSystem.Migrations
 
                     b.HasIndex("AirlineId");
 
-                    b.ToTable("Plane");
+                    b.ToTable("Planes");
                 });
 
             modelBuilder.Entity("FlightBookingSystem.Models.RoleModel", b =>
@@ -179,7 +179,7 @@ namespace FlightBookingSystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<Guid>("AirlineId")
+                    b.Property<Guid?>("AirlineId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("RoleName")
@@ -217,7 +217,7 @@ namespace FlightBookingSystem.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("FlightBookingSystem.Models.AirlineModel", b =>
@@ -303,9 +303,7 @@ namespace FlightBookingSystem.Migrations
                 {
                     b.HasOne("FlightBookingSystem.Models.AirlineModel", "AirlineModel")
                         .WithMany()
-                        .HasForeignKey("AirlineId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AirlineId");
 
                     b.Navigation("AirlineModel");
                 });

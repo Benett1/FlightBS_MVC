@@ -31,6 +31,10 @@ namespace FlightBookingSystem.Controllers
             return View(userModel);
         }
 
+        public IActionResult Logout() {
+            Response.Cookies.Delete("userId");
+            return RedirectToAction("Index","Home");
+        }
         // GET: Users/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
@@ -80,7 +84,7 @@ namespace FlightBookingSystem.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id");
+            ViewData["Name"] = new SelectList(_context.Roles, "RoleName", "RoleName");
             return View();
         }
 
@@ -89,16 +93,25 @@ namespace FlightBookingSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Surname,Age,Password,RoleId,Id")] UserModel userModel)
+        public async Task<IActionResult> Create(string name, string surname, int age, string password, String RoleModel)
         {
+            UserModel userModel = new UserModel();
+            var role = _context.Roles.FirstOrDefault(c => c.RoleName == RoleModel);
+
             if (ModelState.IsValid)
             {
                 userModel.Id = Guid.NewGuid();
+                userModel.Name = name;
+                userModel.Surname = surname;
+                userModel.Age = age;
+                userModel.Password = password;
+                userModel.RoleId = role.Id; 
+                
                 _context.Add(userModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Id", userModel.RoleId);
+            ViewData["Name"] = new SelectList(_context.Roles, "Id", "Id", userModel.RoleId);
             return View(userModel);
         }
 
