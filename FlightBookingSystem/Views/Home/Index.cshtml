@@ -518,7 +518,7 @@
             @foreach (var e in Model)
             {
                 <div class="d-flex flex-column shadow p-3 mb-5 bg-white rounded">
-                    <a href="Flights/Details/@e.id" style="text-decoration: none;">
+                    <a href="@Url.Action("Details", "Flights", new { id = e.id })" style="text-decoration: none;">
                         <div>
                             <span>
                                 Flight Id:

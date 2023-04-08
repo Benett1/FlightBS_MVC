@@ -9,11 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 
-
-var connectionString = builder.Configuration.GetSection("DbConfig:ConnectionString").Get<string>();
-
 builder.Services.AddDbContext<DBContext>(options =>
 {
+    var connectionString = builder.Configuration.GetSection("DbConfig:ConnectionString").Get<string>();
     options.UseMySQL(connectionString!);
 });
 

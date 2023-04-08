@@ -3,16 +3,11 @@ using FlightBookingSystem.Models;
 using FlightBookingSystem.Models.DBGetModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Linq;
 
 namespace FlightBookingSystem.Controllers;
 
 public class HomeController : Controller
 {
-    HttpClient client = new HttpClient();
     private readonly DBContext _context;
 
     public HomeController(DBContext context)
