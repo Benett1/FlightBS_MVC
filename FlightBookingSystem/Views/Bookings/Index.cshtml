@@ -1,14 +1,18 @@
 @model IEnumerable<FlightBookingSystem.Models.BookingsModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Bookings";
+
 }
 
-<h1>Index</h1>
+<h2>Bookings</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (ViewData["Success"] != null) {
+    <script>
+        alert("Seat is taken, chose another one!");
+    </script>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -28,12 +32,11 @@
                 @Html.DisplayNameFor(model => model.baggage)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FlightModel)
+                @Html.DisplayNameFor(model => model.FlightId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserModel)
+                @Html.DisplayNameFor(model => model.FlightModel!.DateTime)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -57,15 +60,16 @@
             <td>
                 @Html.DisplayFor(modelItem => item.FlightModel.Id)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserModel.Id)
-            </td>
+            <th>
+                @Html.DisplayFor(modelItem => item.FlightModel.DateTime)
+            </th>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
+       
 }
     </tbody>
 </table>

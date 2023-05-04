@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightBookingSystem.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230407195945_fixedRoles")]
-    partial class fixedRoles
+    [Migration("20230502161208_Planet")]
+    partial class Planet
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,7 +51,8 @@ namespace FlightBookingSystem.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)");
 
                     b.HasKey("Id");
 
@@ -73,13 +74,15 @@ namespace FlightBookingSystem.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)");
 
                     b.Property<int>("Seat")
                         .HasColumnType("int");
 
                     b.Property<string>("Surname")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
@@ -152,13 +155,16 @@ namespace FlightBookingSystem.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Manufacturer")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)");
 
                     b.Property<string>("Model")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)");
 
                     b.Property<double>("Payload")
                         .HasColumnType("double");
@@ -205,16 +211,19 @@ namespace FlightBookingSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<string>("Surname")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(45)
+                        .HasColumnType("varchar(45)");
 
                     b.HasKey("Id");
 

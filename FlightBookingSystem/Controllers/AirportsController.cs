@@ -22,8 +22,13 @@ namespace FlightBookingSystem.Controllers
         // GET: Airports
         public async Task<IActionResult> Index()
         {
-            var dBContext = _context.Airports.Include(a => a.LocationModel);
-            return View(await dBContext.ToListAsync());
+            if (GlobalState.UserRole == "Admin")
+            {
+                var dBContext = _context.Airports.Include(a => a.LocationModel);
+                return View(await dBContext.ToListAsync());
+            }
+            return NotFound();
+           
         }
 
         // GET: Airports/Details/5

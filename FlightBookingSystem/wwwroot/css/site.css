@@ -20,3 +20,36 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/*style for plane on booking page*/
+
+.plane {
+    background-color: #f2f2f2;
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    align-content: end;
+    flex-wrap: wrap;
+}
+
+.seats {
+    min-width:170px;
+    background-color: rgb(64, 64, 64);
+    border-radius: 10px;
+    margin: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+    .seats button {
+        height: 3vw;
+        min-height:35px;
+        min-width: 35px;
+        width: 3vw;
+        background-color: rgb(69, 174, 223);
+       
+    }
+    .seats button:hover {
+        background-color: rgb(29, 194, 223);
+    }
+

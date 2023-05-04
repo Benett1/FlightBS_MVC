@@ -7,7 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace FlightBookingSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class fixedRoles : Migration
+    public partial class Planet : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,7 +55,7 @@ namespace FlightBookingSystem.Migrations
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
                     LocationID = table.Column<Guid>(type: "char(36)", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: true)
+                    Name = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,9 +74,9 @@ namespace FlightBookingSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: true),
-                    Model = table.Column<string>(type: "longtext", nullable: true),
-                    Manufacturer = table.Column<string>(type: "longtext", nullable: true),
+                    Name = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true),
+                    Model = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true),
+                    Manufacturer = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true),
                     Seat = table.Column<int>(type: "int", nullable: false),
                     Payload = table.Column<double>(type: "double", nullable: false),
                     Weight = table.Column<double>(type: "double", nullable: false),
@@ -153,10 +153,10 @@ namespace FlightBookingSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: true),
-                    Surname = table.Column<string>(type: "longtext", nullable: true),
+                    Name = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true),
+                    Surname = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    Password = table.Column<string>(type: "longtext", nullable: true),
+                    Password = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true),
                     RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -178,8 +178,8 @@ namespace FlightBookingSystem.Migrations
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
                     FlightId = table.Column<Guid>(type: "char(36)", nullable: false),
                     UserId = table.Column<Guid>(type: "char(36)", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: true),
-                    Surname = table.Column<string>(type: "longtext", nullable: true),
+                    Name = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true),
+                    Surname = table.Column<string>(type: "varchar(45)", maxLength: 45, nullable: true),
                     Age = table.Column<int>(type: "int", nullable: false),
                     Seat = table.Column<int>(type: "int", nullable: false),
                     baggage = table.Column<bool>(type: "tinyint(1)", nullable: false)

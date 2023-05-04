@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FlightBookingSystem;
 using FlightBookingSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FlightBookingSystem.Controllers
 {
@@ -22,11 +23,15 @@ namespace FlightBookingSystem.Controllers
         // GET: Flights
         public async Task<IActionResult> Index()
         {
-            var dBContext = _context.Flights.Include(f => f.ArrivalAirportv).Include(f => f.DepartureAirportv).Include(f => f.PlaneModel);
-            return View(await dBContext.ToListAsync());
+            if (GlobalState.UserRole == "Admin")
+            {
+                var dBContext = _context.Flights.Include(f => f.ArrivalAirportv).Include(f => f.DepartureAirportv).Include(f => f.PlaneModel);
+                return View(await dBContext.ToListAsync());
+            }
+            return NotFound();
         }
 
-        // GET: Flights/Details/5
+        // GET: Flights/Details
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.Flights == null)
@@ -57,8 +62,6 @@ namespace FlightBookingSystem.Controllers
         }
 
         // POST: Flights/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(String planeId, string departureAirport, string arrivalAirport, DateTime dateTime)
@@ -84,7 +87,7 @@ namespace FlightBookingSystem.Controllers
             return View(flightModel);
         }
 
-        // GET: Flights/Edit/5
+        // GET: Flights/Edit
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null || _context.Flights == null)
@@ -103,9 +106,7 @@ namespace FlightBookingSystem.Controllers
             return View(flightModel);
         }
 
-        // POST: Flights/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Flights/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("PlaneId,DepartureAirport,ArrivalAirport,DateTime,Id")] FlightModel flightModel)
@@ -141,7 +142,7 @@ namespace FlightBookingSystem.Controllers
             return View(flightModel);
         }
 
-        // GET: Flights/Delete/5
+        // GET: Flights/Delete
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null || _context.Flights == null)
@@ -162,7 +163,7 @@ namespace FlightBookingSystem.Controllers
             return View(flightModel);
         }
 
-        // POST: Flights/Delete/5
+        // POST: Flights/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

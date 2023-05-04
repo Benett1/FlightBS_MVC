@@ -13,7 +13,7 @@ namespace FlightBookingSystem.Controllers
     public class BookingsController : Controller
     {
         private readonly DBContext _context;
-
+       
         public BookingsController(DBContext context)
         {
             _context = context;
@@ -22,8 +22,17 @@ namespace FlightBookingSystem.Controllers
         // GET: Bookings
         public async Task<IActionResult> Index()
         {
-            var dBContext = _context.Bookings.Include(b => b.FlightModel).Include(b => b.UserModel);
-            return View(await dBContext.ToListAsync());
+            if (GlobalState.UserRole == "Admin")
+            {
+                var dBContext = _context.Bookings.Include(b => b.FlightModel).Include(b => b.UserModel);
+                return View(await dBContext.ToListAsync());
+            }
+            else if (GlobalState.UserRole == "User") {
+                var dBContext = await  _context.Bookings.Include(b => b.FlightModel).Include(b => b.UserModel).ToListAsync();
+                var dbNew =  dBContext.Where(b => b.UserId == GlobalState.User.Id).ToList();
+                return View(dbNew);
+            }
+            return NotFound();
         }
 
         // GET: Bookings/Details/5
@@ -42,15 +51,33 @@ namespace FlightBookingSystem.Controllers
             {
                 return NotFound();
             }
-
             return View(bookingsModel);
         }
 
         // GET: Bookings/Create
-        public IActionResult Create()
+        public IActionResult Create(string fid)
         {
-            ViewData["FlightId"] = new SelectList(_context.Flights, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            var itemList = new List<SelectListItem> {
+                new SelectListItem { Value = fid, Text = fid }
+            };
+
+            FlightModel flight = _context.Flights
+                .Single(f => f.Id == Guid.Parse(fid));
+
+            PlaneModel plane = _context.Planes
+                .Single(p => p.Id == flight.PlaneId);
+
+            List<int> bookingIds = _context.Bookings
+                .Where(b => b.FlightId == Guid.Parse(fid))
+                .Select(b => b.Seat)
+                .ToList();
+
+            ViewData["FlightId"] = itemList;
+            ViewData["UserId"] = GlobalState.User.Id;
+            ViewData["BookingsForFlight"] = bookingIds;
+            ViewData["Seats"] = plane.Seat;
+
+
             return View();
         }
 
@@ -64,13 +91,37 @@ namespace FlightBookingSystem.Controllers
             if (ModelState.IsValid)
             {
                 bookingsModel.Id = Guid.NewGuid();
-                _context.Add(bookingsModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var id = GlobalState.User.Id;
+                if (_context.Bookings.Where(b => b.Seat == bookingsModel.Seat).FirstOrDefault(b => b.Seat == bookingsModel.Seat) == null){
+                    _context.Add(bookingsModel);
+                    await _context.SaveChangesAsync();
+                    ViewData["Success"] = "Data was saved successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            ViewData["FlightId"] = new SelectList(_context.Flights, "Id", "Id", bookingsModel.FlightId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bookingsModel.UserId);
-            return View(bookingsModel);
+            var fid = bookingsModel.FlightId.ToString();
+            var itemList = new List<SelectListItem> {
+                new SelectListItem { Value = fid, Text = fid }
+            };
+
+            FlightModel flight = _context.Flights
+                .Single(f => f.Id == Guid.Parse(fid));
+
+            PlaneModel plane = _context.Planes
+                .Single(p => p.Id == flight.PlaneId);
+
+            List<int> bookingIds = _context.Bookings
+                .Where(b => b.FlightId == Guid.Parse(fid))
+                .Select(b => b.Seat)
+                .ToList();
+
+            ViewData["FlightId"] = itemList;
+            ViewData["UserId"] = GlobalState.User.Id;
+            ViewData["BookingsForFlight"] = bookingIds;
+            ViewData["Seats"] = plane.Seat;
+            ViewData["Success"] = "";
+
+            return View("Create");
         }
 
         // GET: Bookings/Edit/5
@@ -98,6 +149,9 @@ namespace FlightBookingSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("FlightId,UserId,Name,Surname,Age,Seat,baggage,Id")] BookingsModel bookingsModel)
         {
+            ViewData["FlightId"] = new SelectList(_context.Flights, "Id", "Id", bookingsModel.FlightId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bookingsModel.UserId);
+
             if (id != bookingsModel.Id)
             {
                 return NotFound();
@@ -107,8 +161,17 @@ namespace FlightBookingSystem.Controllers
             {
                 try
                 {
-                    _context.Update(bookingsModel);
-                    await _context.SaveChangesAsync();
+
+                    if (_context.Bookings.Where(b => b.Seat == bookingsModel.Seat).FirstOrDefault(b => b.Seat == bookingsModel.Seat) == null)
+                    {
+                        ViewData["Success"] = "Data was saved successfully.";
+                        _context.Update(bookingsModel);
+                        await _context.SaveChangesAsync();
+                    }
+                    else {
+                        ViewData["Success"] = "";
+                    }
+                   
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,10 +184,9 @@ namespace FlightBookingSystem.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return View(bookingsModel);
             }
-            ViewData["FlightId"] = new SelectList(_context.Flights, "Id", "Id", bookingsModel.FlightId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bookingsModel.UserId);
+            
             return View(bookingsModel);
         }
 

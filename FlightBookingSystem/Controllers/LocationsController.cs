@@ -22,9 +22,13 @@ namespace FlightBookingSystem.Controllers
         // GET: Locations
         public async Task<IActionResult> Index()
         {
-              return _context.Locations != null ? 
+            if (GlobalState.UserRole == "Admin")
+            {
+                return _context.Locations != null ?
                           View(await _context.Locations.ToListAsync()) :
                           Problem("Entity set 'DBContext.Locations'  is null.");
+            }
+            return NotFound();
         }
 
         // GET: Locations/Details/5
@@ -43,12 +47,6 @@ namespace FlightBookingSystem.Controllers
             }
 
             return View(locationModel);
-        }
-
-        // GET: Locations/Create
-        public IActionResult Create()
-        {
-            return View();
         }
 
         // POST: Locations/Create

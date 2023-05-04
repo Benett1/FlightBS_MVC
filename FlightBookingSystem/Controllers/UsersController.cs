@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FlightBookingSystem;
 using FlightBookingSystem.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 
 namespace FlightBookingSystem.Controllers
 {
     public class UsersController : Controller
     {
+
         private readonly DBContext _context;
 
         public UsersController(DBContext context)
@@ -28,14 +31,17 @@ namespace FlightBookingSystem.Controllers
                .Include(u => u.RoleModel)
                .FirstOrDefaultAsync(m => ""+m.Id == userid);
 
+            GlobalState.UserRole = userModel != null ? userModel.RoleModel.RoleName : "Guest";
             return View(userModel);
         }
 
         public IActionResult Logout() {
             Response.Cookies.Delete("userId");
+            GlobalState.User = null;
             return RedirectToAction("Index","Home");
         }
-        // GET: Users/Details/5
+
+        // GET: Users/Details
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.Users == null)
@@ -76,27 +82,27 @@ namespace FlightBookingSystem.Controllers
                     Expires = DateTimeOffset.UtcNow.AddDays(1),
                     Secure = true
                 });
-            }
+                GlobalState.User = userModel;
+                GlobalState.UserRole = userModel.RoleModel!.RoleName!;
 
-            return View("Index", userModel);
+                
+            }
+            return RedirectToAction("Index","Home");
         }
 
         // GET: Users/Create
         public IActionResult Create()
         {
-            ViewData["Name"] = new SelectList(_context.Roles, "RoleName", "RoleName");
             return View();
         }
 
         // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string name, string surname, int age, string password, String RoleModel)
+        public async Task<IActionResult> Create(string name, string surname, int age, string password)
         {
             UserModel userModel = new UserModel();
-            var role = _context.Roles.FirstOrDefault(c => c.RoleName == RoleModel);
+            var role = _context.Roles.FirstOrDefault(c => c.RoleName == "User");
 
             if (ModelState.IsValid)
             {
@@ -132,9 +138,7 @@ namespace FlightBookingSystem.Controllers
             return View(userModel);
         }
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Users/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Name,Surname,Age,Password,RoleId,Id")] UserModel userModel)
@@ -168,7 +172,7 @@ namespace FlightBookingSystem.Controllers
             return View(userModel);
         }
 
-        // GET: Users/Delete/5
+        // GET: Users/Delete
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null || _context.Users == null)
@@ -187,7 +191,7 @@ namespace FlightBookingSystem.Controllers
             return View(userModel);
         }
 
-        // POST: Users/Delete/5
+        // POST: Users/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

@@ -22,11 +22,15 @@ namespace FlightBookingSystem.Controllers
         // GET: Airlines
         public async Task<IActionResult> Index()
         {
-            var dBContext = _context.Airlines.Include(a => a.LocationModel);
-            return View(await dBContext.ToListAsync());
+            if (GlobalState.UserRole == "Admin")
+            {
+                var llocationData = _context.Airlines.Include(a => a.LocationModel);
+                return View(await llocationData.ToListAsync());
+            }
+            return NotFound();
         }
 
-        // GET: Airlines/Details/5
+        // GET: Airlines/Details
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.Airlines == null)
@@ -41,7 +45,6 @@ namespace FlightBookingSystem.Controllers
             {
                 return NotFound();
             }
-
             return View(airlineModel);
         }  
 
@@ -54,8 +57,6 @@ namespace FlightBookingSystem.Controllers
         }
 
         // POST: Airlines/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string name, String countryOfOrigin, Guid id)
@@ -75,7 +76,7 @@ namespace FlightBookingSystem.Controllers
             return View(airlineModel);
         }
 
-        // GET: Airlines/Edit/5
+        // GET: Airlines/Edit
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null || _context.Airlines == null)
@@ -92,9 +93,7 @@ namespace FlightBookingSystem.Controllers
             return View(airlineModel);
         }
 
-        // POST: Airlines/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Airlines/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Name,CountryOfOrigin,Id")] AirlineModel airlineModel)
@@ -128,7 +127,7 @@ namespace FlightBookingSystem.Controllers
             return View(airlineModel);
         }
 
-        // GET: Airlines/Delete/5
+        // GET: Airlines/Delete
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null || _context.Airlines == null)
@@ -147,7 +146,7 @@ namespace FlightBookingSystem.Controllers
             return View(airlineModel);
         }
 
-        // POST: Airlines/Delete/5
+        // POST: Airlines/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

@@ -11,8 +11,8 @@ namespace FlightBookingSystem.Models
         public int Seat { get; set; }
 		public bool baggage { get; set; }
 
-		public virtual FlightModel? FlightModel { get; set; }
-		public virtual UserModel? UserModel { get; set; }
+		public FlightModel? FlightModel { get; set; }
+		public UserModel? UserModel { get; set; }
 	}
 }
 

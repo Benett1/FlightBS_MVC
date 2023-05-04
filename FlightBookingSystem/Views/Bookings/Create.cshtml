@@ -1,59 +1,113 @@
 @model FlightBookingSystem.Models.BookingsModel
 
-@{
-    ViewData["Title"] = "Create";
+
+@if (ViewData["Success"] == "")
+{
+    <script>alert("Seat is taken, chose another one!");</script>
+
 }
 
-<h1>Create</h1>
+@{
+    List<int> bookedSeats = ViewData["BookingsForFlight"] as List<int>;
 
-<h4>BookingsModel</h4>
+    int seats = int.Parse(ViewData["Seats"].ToString());
+    int row = 3;
+    int step = 0;
+}
+
+
+
+<h2>Bookings</h2>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FlightId" class="control-label"></label>
-                <select asp-for="FlightId" class ="form-control" asp-items="ViewBag.FlightId"></select>
+    <div>
+        <div class="row">
+            <div class="col-6">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="FlightId" class="control-label"></label>
+                        <select asp-for="FlightId" class="form-control" asp-items="ViewBag.FlightId"></select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UserId" class="control-label"></label>
+                        <select asp-for="UserId" class="form-control">
+                            <option>@ViewBag.UserId</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" required/>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Surname" class="control-label"></label>
+                        <input asp-for="Surname" class="form-control" required/>
+                        <span asp-validation-for="Surname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Age" class="control-label"></label>
+                        <input asp-for="Age" class="form-control" />
+                        <span asp-validation-for="Age" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Seat" class="control-label"></label>
+                        <input asp-for="Seat" class="spanSeat form-control" />
+                        <span asp-validation-for="Seat" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="baggage" /> @Html.DisplayNameFor(model => model.baggage)
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+            <div class="col-6">
+                <div class="d-flex flex-column align-items-center">
+                    <h2>Select the Seat</h2>
+                    <img style="width:190px; height:200px" src="/PLANE_TOP_VIEW.png" />
+                    <div class="plane">
+                        <table class="seats">
+
+                            @for (int i = 1; i <= seats; i += 0)
+                            {
+                                <tr>
+                                    @for (int j = 0; j <= row; j++)
+                                    {
+                                        @if (bookedSeats.Exists(e => e == i))
+                                        {
+                                            <td> <button type="button" class="btn btn-primary" disabled></button></td>
+                                            i++;
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <button type="button" class="btn btn-primary" onclick="function clicked(){
+                                                            let span = document.getElementsByClassName('spanSeat')[0];
+                                                            span.value = @(i);
+                                                            };
+                                                            clicked();">
+                                                    @(i++)
+                                                </button>
+                                            </td>
+
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Surname" class="control-label"></label>
-                <input asp-for="Surname" class="form-control" />
-                <span asp-validation-for="Surname" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Age" class="control-label"></label>
-                <input asp-for="Age" class="form-control" />
-                <span asp-validation-for="Age" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Seat" class="control-label"></label>
-                <input asp-for="Seat" class="form-control" />
-                <span asp-validation-for="Seat" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="baggage" /> @Html.DisplayNameFor(model => model.baggage)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a href="@Url.Action("Index", "Home")">Back to List</a>
 </div>
 
 @section Scripts {

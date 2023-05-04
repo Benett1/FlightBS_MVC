@@ -1,5 +1,11 @@
 @model FlightBookingSystem.Models.BookingsModel
 
+@if (ViewData["Success"] == "")
+{
+    <script>alert("Seat is taken, chose another one!");</script>
+
+}
+
 @{
     ViewData["Title"] = "Edit";
 }

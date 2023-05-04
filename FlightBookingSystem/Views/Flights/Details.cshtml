@@ -20,23 +20,28 @@
             @Html.DisplayNameFor(model => model.PlaneModel)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PlaneModel.Id)
+            @Html.DisplayFor(model => model.PlaneModel.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.DepartureAirportv)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DepartureAirportv.Id)
+            @Html.DisplayFor(model => model.DepartureAirportv.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ArrivalAirportv)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ArrivalAirportv.Id)
+            @Html.DisplayFor(model => model.ArrivalAirportv.Name)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    @if (GlobalState.UserRole == "Admin")
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+    }
+    <a href="@Url.Action("Index", "Home")">Back to List</a>
+
 </div>
